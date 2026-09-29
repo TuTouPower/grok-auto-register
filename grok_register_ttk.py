@@ -1,12 +1,33 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
 Grok 注册机 - TTK GUI 版本
 整合 DrissionPage_example.py, openai_register.py, batch_open_nsfw.py
 """
 
-import tkinter as tk
-from tkinter import ttk, messagebox, scrolledtext
+try:
+    import tkinter as tk
+    from tkinter import ttk, messagebox, scrolledtext
+    _TK_AVAILABLE = True
+except ImportError:
+    _TK_AVAILABLE = False
+    class _FakeTk:
+        NORMAL = 'normal'; DISABLED = 'disabled'; ACTIVE = 'active'
+        END = 'end'; INSERT = 'insert'; LEFT = 'left'; RIGHT = 'right'
+        TOP = 'top'; BOTTOM = 'bottom'; X = 'x'; Y = 'y'; BOTH = 'both'
+        HORIZONTAL = 'horizontal'; VERTICAL = 'vertical'
+        WORD = 'word'; CHAR = 'char'; CENTER = 'center'
+        W = 'w'; E = 'e'; S = 's'; N = 'n'; EW = 'ew'; NS = 'ns'
+        SINGLE = 'single'; BROWSE = 'browse'; EXTENDED = 'extended'
+        SUNKEN = 'sunken'; RAISED = 'raised'; GROOVE = 'groove'
+        RIDGE = 'ridge'; FLAT = 'flat'; SOLID = 'solid'
+        def __init__(self, *a, **kw): pass
+        def __getattr__(self, n): return type(self)()
+        def __call__(self, *a, **kw): return type(self)()
+    tk = _FakeTk()
+    ttk = _FakeTk()
+    messagebox = _FakeTk()
+    scrolledtext = _FakeTk()
 import threading
 import datetime
 import time
@@ -4088,6 +4109,9 @@ def main():
     if len(sys.argv) > 1 and sys.argv[1].strip().lower() in ("start", "cli", "--cli"):
         main_cli()
         return
+    if not _TK_AVAILABLE:
+        print("[!] tkinter 未安装，无法启动 GUI。请用 CLI 模式: python grok_register_ttk.py cli")
+        sys.exit(1)
     root = tk.Tk()
     setup_light_theme(root)
     app = GrokRegisterGUI(root)
